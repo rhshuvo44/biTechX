@@ -1,9 +1,27 @@
-export interface Product {
+export type Category = {
   id: string;
   name: string;
-  category: string;
+  image: string;
+  createdAt: string;
+  updatedAt: string;
+  description: string | null;
+};
+
+export type Product = {
+  id: string;
+  name: string;
+  description: string;
+  images: string[];
   price: number;
-  description?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  slug: string;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
+};
+
+// If the API returns an array of products, you would use:
+export type ProductList = Product[];
+export interface ProductsResponse {
+  data: Product[];
+  total: number;
 }
