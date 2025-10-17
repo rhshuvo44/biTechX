@@ -136,17 +136,12 @@ import {
 import Link from "next/link";
 
 export default function ProductsPage() {
-  const [page, setPage] = useState(1);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const {
-    data: products,
-    isLoading,
-    error,
-  } = useGetProductsQuery({ page, search: "" });
+  const { data: products, isLoading } = useGetProductsQuery({});
 
   const [deleteProduct] = useDeleteProductMutation();
   console.log(products);
@@ -278,7 +273,7 @@ export default function ProductsPage() {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
-      render: (_: any, record: Product) => (
+      render: (_: unknown, record: Product) => (
         <Image
           src={record?.images[0]}
           alt="Employee Photo"
@@ -327,7 +322,7 @@ export default function ProductsPage() {
       render: (item: Product) => {
         return (
           <Space>
-            <Link href={`/employee/${item.id}`}>Edit</Link>
+            <Link href={`/product/edit/${item.slug}`}>Edit</Link>
 
             <Button danger onClick={() => handleDelete(item.id as string)}>
               Delete
@@ -344,13 +339,15 @@ export default function ProductsPage() {
         <div className="flex flex-col lg:flex-row gap-1 items-center justify-between mb-2">
           <h1 className="text-2xl font-bold">Product List</h1>
           <div className="text-sm md:text-lg lg:text-3xl font-bold">
-            <span className="text-red-500">
-              <Button type="primary">Create Product</Button>
-            </span>
+            <Button type="primary">
+              <Link href="/product/create">+ Add Product</Link>
+            </Button>
           </div>
         </div>
         <div className="responsive-table-container">
           <Table
+            loading={isLoading}
+            pagination={{ pageSize: 6 }}
             size="small"
             className="table-auto"
             // style={{ tableLayout: "auto" }}
@@ -367,7 +364,6 @@ export default function ProductsPage() {
             title="Product Photo"
             onCancel={() => setPreviewOpen(false)}
             footer={null}
-            
           >
             <Image src={previewImage} alt="Product Photo" />
           </Modal>

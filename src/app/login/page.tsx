@@ -49,7 +49,7 @@ export default function LoginPage() {
 
       // Redirect to products dashboard
       router.push("/");
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
       setApiError("Failed to login. Please check your email.");
     } finally {

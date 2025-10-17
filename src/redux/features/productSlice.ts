@@ -1,4 +1,4 @@
-import type { Product } from "@/types/product";
+import type { Category, Product } from "@/types/product";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState } from "../store";
 
@@ -13,7 +13,7 @@ export const productApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Product"],
+  tagTypes: ["Product", "categories"],
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => {
@@ -63,6 +63,17 @@ export const productApi = createApi({
         { type: "Product", id: "LIST" },
       ],
     }),
+    getCategories: builder.query({
+                query: () => {
+                    return `/categories`;
+                },
+                providesTags: ["categories"],
+            }),
+    
+            getCategory: builder.query<Category, string>({
+                query: (id) => `/categories/${id}`,
+                providesTags: ["categories"],
+            }),
   }),
 });
 
@@ -72,4 +83,6 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  useGetCategoriesQuery,
+  useGetCategoryQuery,
 } = productApi;

@@ -7,6 +7,7 @@ export const productSchema = z.object({
         .number("Price must be a number")
         .positive("Price must be greater than 0"),
     description: z.string().optional(),
+    imageUrl: z.string().url("Invalid URL").optional(),
 });
 
 export type ProductFormType = z.infer<typeof productSchema>;
