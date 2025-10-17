@@ -3,6 +3,7 @@ import Sider from "antd/es/layout/Sider";
 import { useState } from "react";
 // import { TUser, useCurrentToken } from "../../redux/features/auth/authSlice";
 import { ProductFilled } from "@ant-design/icons";
+import Link from "next/link";
 const SideBar = () => {
   const [openKeys, setOpenKeys] = useState([]);
 
@@ -15,12 +16,12 @@ const SideBar = () => {
     {
       key: "2",
       icon: <ProductFilled />,
-      label: "Products",
+      label: <Link href="/dashboard/">Products</Link>,
     },
     {
       key: "3",
       icon: <ProductFilled />,
-      label: "Add Product",
+      label: <Link href="/dashboard/categories">Add Category</Link>,
     },
   ];
 

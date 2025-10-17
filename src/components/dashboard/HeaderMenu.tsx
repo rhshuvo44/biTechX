@@ -1,7 +1,6 @@
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
-import { Avatar, Badge, Button, Dropdown, Layout, Menu, MenuProps } from "antd";
+import { Avatar, Badge, Button, Dropdown, Layout, MenuProps } from "antd";
 import Link from "next/link";
-// import { logout } from "../../redux/features/auth/authSlice";
 
 const { Header } = Layout;
 const HeaderMenu = () => {
@@ -21,7 +20,7 @@ const HeaderMenu = () => {
     {
       label: (
         <Button
-        //   onClick={() => dispatch(logout())}
+        // onClick={() => dispatch(logout())}
         >
           Logout
         </Button>
@@ -47,7 +46,7 @@ const HeaderMenu = () => {
       </div>
 
       <div className="flex gap-4 justify-center items-center">
-        <Dropdown overlay={<Menu />} trigger={["click"]}>
+        <Dropdown trigger={["click"]}>
           <Badge count={2} size="small" offset={[-2, 4]}>
             <Avatar
               alt="avatar"

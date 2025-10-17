@@ -60,7 +60,7 @@ export default function ProductForm({
         await updateProduct({ id, data: payload }).unwrap();
         toast.success("Product updated successfully!");
       }
-      router.push("/");
+      router.push("/dashboard");
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong!");
