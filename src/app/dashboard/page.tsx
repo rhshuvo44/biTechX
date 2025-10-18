@@ -196,6 +196,10 @@ export default function ProductsPage() {
       dataIndex: "name",
       key: "name",
       ...getColumnSearchProps("name"),
+      width: 250,
+      render: (text: string) => (
+        <span>{text.length > 50 ? text.slice(0, 50) + "..." : text}</span>
+      ),
     },
     {
       title: "Description",
