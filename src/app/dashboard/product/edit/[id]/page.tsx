@@ -16,14 +16,13 @@ export default function EditProductPage() {
     <div className="max-w-lg mx-auto mt-10">
       <h1 className="text-2xl font-semibold mb-4 text-center">Edit Product</h1>
       <ProductForm
-        id={id}
+        id={product?.id}
         mode="edit"
         defaultValues={{
           name: product.name,
-          category: product.category.name,
+          categoryId: product.category.id,
           price: product.price,
           description: product.description,
-          
         }}
       />
       <Toaster position="top-center" />

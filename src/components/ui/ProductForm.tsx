@@ -3,8 +3,10 @@
 import { ProductFormType, productSchema } from "@/lib/validation";
 import {
   useCreateProductMutation,
+  useGetCategoriesQuery,
   useUpdateProductMutation,
 } from "@/redux/features/productSlice";
+import { Category } from "@/types/product";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -25,10 +27,8 @@ export default function ProductForm({
   const router = useRouter();
   const [createProduct, { isLoading: creating }] = useCreateProductMutation();
   const [updateProduct, { isLoading: updating }] = useUpdateProductMutation();
+  const { data: categories } = useGetCategoriesQuery({});
 
-  // if (loadingCategories) {
-  //   return <p>Loading categories...</p>;
-  // }
   const {
     register,
     handleSubmit,
@@ -41,17 +41,18 @@ export default function ProductForm({
   const imagePreview = watch("imageUrl");
 
   const onSubmit = async (data: ProductFormType) => {
-    console.log("object", data);
+   
+
     const payload = {
       name: data.name,
       description: data.description,
       price: data.price,
-      categoryId: data.category,
+      categoryId: data.categoryId,
       images: [data.imageUrl].filter(
         (url): url is string => typeof url === "string"
       ),
     };
-    console.log("payload", payload);
+    console.log(payload);
     try {
       if (mode === "create") {
         await createProduct(payload).unwrap();
@@ -84,18 +85,28 @@ export default function ProductForm({
         )}
       </div>
 
+      
       <div>
         <label className="block mb-1 font-medium">Category</label>
-        <input
-          {...register("category")}
-          placeholder="Category"
+        <select
+          {...register("categoryId", { required: "Category is required" })}
           className="border p-2 w-full rounded"
-        />
-        {errors.category && (
-          <p className="text-danger text-sm">{errors.category.message}</p>
+          defaultValue={defaultValues?.categoryId || ""}
+        >
+          <option value="" disabled>
+            Select Category
+          </option>
+          {categories?.map((cat: Category) => (
+            <option key={cat?.id} value={cat?.id}>
+              {cat?.name}
+            </option>
+          ))}
+        </select>
+
+        {errors.categoryId && (
+          <p className="text-red-500 text-sm">{errors.categoryId.message}</p>
         )}
       </div>
-
       <div>
         <label className="block mb-1 font-medium">Price</label>
         <input

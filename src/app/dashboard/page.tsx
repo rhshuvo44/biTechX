@@ -322,7 +322,7 @@ export default function ProductsPage() {
       render: (item: Product) => {
         return (
           <Space>
-            <Link href={`/product/edit/${item.slug}`}>Edit</Link>
+            <Link href={`/dashboard/product/edit/${item.slug}`}>Edit</Link>
 
             <Button danger onClick={() => handleDelete(item.id as string)}>
               Delete

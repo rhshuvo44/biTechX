@@ -1,121 +1,3 @@
-// "use client";
-
-// import ProtectedRoute from "@/components/ProtectedRoute";
-// import Link from "next/link";
-// import { useState } from "react";
-
-// import {
-//   useDeleteProductMutation,
-//   useGetProductsQuery,
-// } from "@/redux/features/productSlice";
-// import { Product } from "@/types/product";
-// import Image from "next/image";
-// import { useDebounce } from "@/hook/useDebounce";
-
-// export default function ProductsPage() {
-//   const [page, setPage] = useState(1);
-//   const [search, setSearch] = useState("");
-
-//  const debouncedSearch = useDebounce(search, 300);
-
-//   const { data:products, isLoading, error } = useGetProductsQuery({ page, search: debouncedSearch });
-
-//   const [deleteProduct] = useDeleteProductMutation();
-//   console.log(products);
-//   const handleDelete = async (id: string) => {
-//     if (!confirm("Are you sure you want to delete this product?")) return;
-//     await deleteProduct(id); // RTK Query handles cache invalidation
-//   };
-
-//   return (
-//     <ProtectedRoute>
-//       <div className="p-6">
-//         {/* Search & Create */}
-//         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-//           <input
-//             type="text"
-//             placeholder="Search products..."
-//             value={search}
-//             onChange={(e) => setSearch(e.target.value)}
-//             className="border p-2 rounded w-full md:w-1/3"
-//           />
-//           <Link
-//             href="/products/create"
-//             className="bg-[#4E6E5D] text-white px-4 py-2 rounded hover:bg-[#AD8A64]"
-//           >
-//             Create Product
-//           </Link>
-//         </div>
-
-//         {/* Loading/Error */}
-//         {isLoading && <p>Loading products...</p>}
-//         {error && <p className="text-red-500">Failed to load products</p>}
-
-//         {/* Products Grid */}
-//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-//           {products?.map((product: Product) => (
-//             <div
-//               key={product.id}
-//               className="border rounded p-4 shadow hover:shadow-lg transition relative"
-//             >
-//               <Image
-//                 src={product.images[0]}
-//                 alt={product.name}
-//                 className="w-full h-40 object-cover rounded mb-2"
-//                 width={400}
-//                 height={160}
-//               />
-//               <h3 className="text-lg font-semibold mb-1">{product.name}</h3>
-//               {/* <p className="text-sm text-gray-600 mb-1">{product.category.name}</p> */}
-//               <p className="text-md font-bold mb-2">${product.price}</p>
-
-//               {/* Actions */}
-//               <div className="flex justify-between">
-//                 <Link
-//                   href={`/products/${product.slug}`}
-//                   className="text-blue-500 hover:underline"
-//                 >
-//                   Details
-//                 </Link>
-//                 <Link
-//                   href={`/products/${product.slug}/edit`}
-//                   className="text-green-500 hover:underline"
-//                 >
-//                   Edit
-//                 </Link>
-//                 <button
-//                   onClick={() => handleDelete(product.id)}
-//                   className="text-red-500 hover:underline"
-//                 >
-//                   Delete
-//                 </button>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* Pagination */}
-//         <div className="flex justify-center items-center space-x-4 mt-6">
-//           <button
-//             disabled={page === 1}
-//             onClick={() => setPage((prev) => prev - 1)}
-//             className="px-3 py-1 border rounded disabled:opacity-50"
-//           >
-//             Prev
-//           </button>
-//           <span>Page {page}</span>
-//           <button
-//             disabled={products?.length === 0 || products?.length < 10}
-//             onClick={() => setPage((prev) => prev + 1)}
-//             className="px-3 py-1 border rounded disabled:opacity-50"
-//           >
-//             Next
-//           </button>
-//         </div>
-//       </div>
-//     </ProtectedRoute>
-//   );
-// }
 "use client";
 import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnType } from "antd";
@@ -124,12 +6,12 @@ import type { FilterDropdownProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 
-import { Product } from "@/types/product";
-type DataIndex = keyof Product;
+import { Category } from "@/types/product";
+type DataIndex = keyof Category;
 
 import {
   useDeleteProductMutation,
-  useGetProductsQuery,
+  useGetCategoriesQuery,
 } from "@/redux/features/productSlice";
 import Link from "next/link";
 
@@ -139,10 +21,10 @@ export default function CategoriesPage() {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const { data: products, isLoading } = useGetProductsQuery({});
+  const { data: categories, isLoading } = useGetCategoriesQuery({});
 
   const [deleteProduct] = useDeleteProductMutation();
-  console.log(products);
+  
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     await deleteProduct(id); // RTK Query handles cache invalidation
@@ -165,7 +47,7 @@ export default function CategoriesPage() {
 
   const getColumnSearchProps = (
     dataIndex: DataIndex
-  ): TableColumnType<Product> => ({
+  ): TableColumnType<Category> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -273,13 +155,13 @@ export default function CategoriesPage() {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
-      render: (_: unknown, record: Product) => (
+      render: (_: unknown, record: Category) => (
         <Image
-          src={record?.images[0] || ""}
+          src={record?.image}
           alt="Product Photo"
           onClick={() => {
-            setPreviewImage(record.images[0] || "");
-            setPreviewOpen(true); 
+            setPreviewImage(record.image);
+            setPreviewOpen(true);
           }}
           style={{
             width: "50px",
@@ -297,32 +179,14 @@ export default function CategoriesPage() {
       key: "name",
       ...getColumnSearchProps("name"),
     },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-    },
-
-    {
-      title: "Category",
-      key: "category",
-      render: (item: Product) => {
-        return <p>{item.category.name}</p>;
-      },
-    },
 
     {
       title: "Action",
       key: "action",
-      render: (item: Product) => {
+      render: (item: Category) => {
         return (
           <Space>
-            <Link href={`/product/edit/${item.slug}`}>Edit</Link>
+            <Link href={`/categories/edit/${item.id}`}>Edit</Link>
 
             <Button danger onClick={() => handleDelete(item.id as string)}>
               Delete
@@ -336,15 +200,15 @@ export default function CategoriesPage() {
   return (
     <div className="">
       <div className="flex flex-col lg:flex-row gap-1 items-center justify-between mb-2">
-        <h1 className="text-2xl font-bold">Product List</h1>
+        <h1 className="text-2xl font-bold">Categories List</h1>
         <div className="text-sm md:text-lg lg:text-3xl font-bold">
           <Button type="primary">
-            <Link href="/dashboard/product/create">+ Add Product</Link>
+            <Link href="/dashboard/categories/create">+ Add Category</Link>
           </Button>
         </div>
       </div>
       <div className="responsive-table-container">
-        <Table
+        <Table<Category>
           loading={isLoading}
           pagination={{ pageSize: 6 }}
           size="small"
@@ -352,7 +216,7 @@ export default function CategoriesPage() {
           // style={{ tableLayout: "auto" }}
           bordered
           columns={colums}
-          dataSource={products || []}
+          dataSource={categories || []}
           rowKey="id"
           // scroll={{ y: 55 * 7 }}
           // pagination={false}

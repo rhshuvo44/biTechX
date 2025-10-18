@@ -47,9 +47,8 @@ export const productApi = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [
-        { type: "Product", id },
-        { type: "Product", id: "LIST" },
+      invalidatesTags: [
+        "Product"
       ],
     }),
 
@@ -64,16 +63,16 @@ export const productApi = createApi({
       ],
     }),
     getCategories: builder.query({
-                query: () => {
-                    return `/categories`;
-                },
-                providesTags: ["categories"],
-            }),
-    
-            getCategory: builder.query<Category, string>({
-                query: (id) => `/categories/${id}`,
-                providesTags: ["categories"],
-            }),
+      query: () => {
+        return `/categories`;
+      },
+      providesTags: ["categories"],
+    }),
+
+    getCategory: builder.query<Category, string>({
+      query: (id) => `/categories/${id}`,
+      providesTags: ["categories"],
+    }),
   }),
 });
 

@@ -1,6 +1,5 @@
-// const { data: categories, isLoading: loadingCategories } =
-//     useGetCategoriesQuery({});
+import { Category } from "@/types/product";
 
-// export const getCategoryIdByName = (name: string) => {
-//   return categories.find((c) => c.name === name)?.id;
-// };
+export const getCategoryIdByName = (data: Category[], name: string) => {
+  return data.find((c) => c.name === name)?.id;
+};
