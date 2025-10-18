@@ -11,3 +11,8 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
+.custom-preview-modal .ant-modal-content {
+  background-color: rgba(15, 15, 15, 0.8);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+}

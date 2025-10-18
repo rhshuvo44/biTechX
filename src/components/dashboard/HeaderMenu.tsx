@@ -55,7 +55,6 @@ const HeaderMenu = () => {
         <Dropdown menu={{ items }} trigger={["click"]}>
           <a onClick={(e) => e.preventDefault()}>
             <Avatar
-              src="https://joeschmoe.io/api/v1/random"
               alt="avatar"
               icon={<UserOutlined />}
               size={{ xs: 24, sm: 32, md: 40, lg: 50, xl: 56, xxl: 60 }}

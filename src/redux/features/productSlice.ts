@@ -47,9 +47,7 @@ export const productApi = createApi({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: [
-        "Product"
-      ],
+      invalidatesTags: ["Product"],
     }),
 
     deleteProduct: builder.mutation<{ id: string }, string>({
@@ -57,9 +55,7 @@ export const productApi = createApi({
         url: `/products/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: [
-        "Product",
-      ],
+      invalidatesTags: ["Product"],
     }),
     getCategories: builder.query({
       query: () => {

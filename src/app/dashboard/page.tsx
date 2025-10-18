@@ -119,7 +119,16 @@
 "use client";
 import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnType } from "antd";
-import { Button, Image, Input, Modal, Space, Table } from "antd";
+import {
+  Button,
+  Image,
+  Input,
+  message,
+  Modal,
+  Popconfirm,
+  Space,
+  Table,
+} from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
@@ -139,13 +148,21 @@ export default function ProductsPage() {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const { data: products, isLoading } = useGetProductsQuery({});
+  const { data: products, isLoading, refetch } = useGetProductsQuery({});
 
-  const [deleteProduct] = useDeleteProductMutation();
-  console.log(products);
+  const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
+
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
-    await deleteProduct(id); // RTK Query handles cache invalidation
+    try {
+      const result = await deleteProduct(id).unwrap();
+      if (result.id) {
+        message.success("Product deleted successfully ✅");
+        refetch();
+      }
+    } catch (error) {
+      console.log(error);
+      message.error("Failed to delete product ❌");
+    }
   };
   const handleSearch = (
     selectedKeys: string[],
@@ -273,23 +290,34 @@ export default function ProductsPage() {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
-      render: (_: unknown, record: Product) => (
-        <Image
-          src={record?.images[0] || ""}
-          alt="Product Photo"
-          onClick={() => {
-            setPreviewImage(record.images[0] || "");
-            setPreviewOpen(true); // Open the modal when image is clicked
-          }}
-          style={{
-            width: "50px",
-            height: "50px",
-            objectFit: "cover",
-            borderRadius: "5px",
-            border: "1px solid #ddd",
-          }}
-        />
-      ),
+      render: (_: unknown, record: Product) => {
+        const fallbackImage = "https://via.placeholder.com/150?text=No+Image";
+        const imageUrl =
+          Array.isArray(record?.images) && record.images.length > 0
+            ? record.images[0]
+            : fallbackImage;
+
+        return (
+          <Image
+            src={imageUrl}
+            alt="Product Photo"
+            onClick={() => {
+              if (Array.isArray(record?.images) && record.images.length > 0) {
+                setPreviewImage(record.images[0]);
+                setPreviewOpen(true);
+              }
+            }}
+            style={{
+              width: "50px",
+              height: "50px",
+              objectFit: "cover",
+              borderRadius: "5px",
+              border: "1px solid #ddd",
+              cursor: "pointer",
+            }}
+          />
+        );
+      },
     },
     {
       title: "Name",
@@ -324,9 +352,19 @@ export default function ProductsPage() {
           <Space>
             <Link href={`/dashboard/product/edit/${item.slug}`}>Edit</Link>
 
-            <Button danger onClick={() => handleDelete(item.id as string)}>
+            <Popconfirm
+              title="Delete this product?"
+              description="Are you sure to delete this product?"
+              okText="Yes"
+              cancelText="No"
+              
+              onConfirm={() => handleDelete(item.id as string)}
+            >
+              <Button danger>Delete</Button>
+            </Popconfirm>
+            {/* <Button danger onClick={() => handleDelete(item.id as string)}>
               Delete
-            </Button>
+            </Button> */}
           </Space>
         );
       },
@@ -345,7 +383,7 @@ export default function ProductsPage() {
       </div>
       <div className="responsive-table-container">
         <Table
-          loading={isLoading}
+          loading={isLoading || isDeleting}
           pagination={{ pageSize: 6 }}
           size="small"
           className="table-auto"

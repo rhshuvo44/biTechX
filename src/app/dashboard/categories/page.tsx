@@ -24,7 +24,7 @@ export default function CategoriesPage() {
   const { data: categories, isLoading } = useGetCategoriesQuery({});
 
   const [deleteProduct] = useDeleteProductMutation();
-  
+
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     await deleteProduct(id); // RTK Query handles cache invalidation
@@ -155,23 +155,31 @@ export default function CategoriesPage() {
       title: "Photo",
       dataIndex: "photo",
       key: "photo",
-      render: (_: unknown, record: Category) => (
-        <Image
-          src={record?.image}
-          alt="Product Photo"
-          onClick={() => {
-            setPreviewImage(record.image);
-            setPreviewOpen(true);
-          }}
-          style={{
-            width: "50px",
-            height: "50px",
-            objectFit: "cover",
-            borderRadius: "5px",
-            border: "1px solid #ddd",
-          }}
-        />
-      ),
+      render: (_: unknown, record: Category) => {
+        const fallbackImage = "https://via.placeholder.com/150?text=No+Image";
+        const imageUrl = record.image ? record.image : fallbackImage;
+
+        return (
+          <Image
+            src={imageUrl}
+            alt="Category Photo"
+            onClick={() => {
+              if (record.image.length > 0) {
+                setPreviewImage(record.image);
+                setPreviewOpen(true);
+              }
+            }}
+            style={{
+              width: "80px",
+              height: "80px",
+              objectFit: "cover",
+              borderRadius: "5px",
+              border: "1px solid #ddd",
+              cursor: "pointer",
+            }}
+          />
+        );
+      },
     },
     {
       title: "Name",

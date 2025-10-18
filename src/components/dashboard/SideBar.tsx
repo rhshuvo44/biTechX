@@ -21,7 +21,7 @@ const SideBar = () => {
     {
       key: "3",
       icon: <ProductFilled />,
-      label: <Link href="/dashboard/categories">Add Category</Link>,
+      label: <Link href="/dashboard/categories"> Category</Link>,
     },
   ];
 
@@ -56,7 +56,7 @@ const SideBar = () => {
       <div className="m-5">
         {/* <img src={logo} alt="logo" /> */}
 
-        <h1>BiTechX</h1>
+        <h1 className="text-white text-2xl font-bold">BiTechX</h1>
       </div>
       <Menu
         openKeys={openKeys}
