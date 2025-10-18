@@ -5,7 +5,7 @@ import type { RootState } from "../store";
 export const productApi = createApi({
   reducerPath: "productApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL,
+    baseUrl: process.env.NEXT_PUBLIC_API_URL || "https://api.bitechx.com/",
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) headers.set("Authorization", `Bearer ${token}`);
@@ -17,11 +17,6 @@ export const productApi = createApi({
   endpoints: (builder) => ({
     getProducts: builder.query({
       query: () => {
-        // const params = new URLSearchParams();
-        // params.append("offset", ((page - 1) * 10).toString());
-        // params.append("limit", "10");
-        // if (search) params.append("searchedText", search);
-        // if (categoryId) params.append("categoryId", categoryId);
         return `/products`;
       },
       // providesTags: ["Product"],
