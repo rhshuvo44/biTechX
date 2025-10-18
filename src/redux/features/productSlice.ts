@@ -24,7 +24,14 @@ export const productApi = createApi({
         // if (categoryId) params.append("categoryId", categoryId);
         return `/products`;
       },
-      providesTags: ["Product"],
+      // providesTags: ["Product"],
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.map(({ id }: { id: string }) => ({ type: "Product" as const, id })),
+            { type: "Product", id: "LIST" },
+          ]
+          : [{ type: "Product", id: "LIST" }],
     }),
 
     getProduct: builder.query<Product, string>({
@@ -55,7 +62,8 @@ export const productApi = createApi({
         url: `/products/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Product"],
+      // invalidatesTags: ["Product"],
+      invalidatesTags: [{ type: "Product", id: "LIST" }],
     }),
     getCategories: builder.query({
       query: () => {

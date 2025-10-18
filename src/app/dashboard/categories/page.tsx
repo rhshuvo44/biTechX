@@ -226,6 +226,8 @@ export default function CategoriesPage() {
           columns={colums}
           dataSource={categories || []}
           rowKey="id"
+           scroll={{ x: "max-content",y: 55 * 7 }} // horizontal scroll যোগ
+          style={{ tableLayout: "fixed" }}
           // scroll={{ y: 55 * 7 }}
           // pagination={false}
         />

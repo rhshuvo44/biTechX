@@ -119,16 +119,7 @@
 "use client";
 import { SearchOutlined } from "@ant-design/icons";
 import type { InputRef, TableColumnType } from "antd";
-import {
-  Button,
-  Image,
-  Input,
-  message,
-  Modal,
-  Popconfirm,
-  Space,
-  Table,
-} from "antd";
+import { Button, Image, Input, Modal, Popconfirm, Space, Table } from "antd";
 import type { FilterDropdownProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
@@ -141,6 +132,7 @@ import {
   useGetProductsQuery,
 } from "@/redux/features/productSlice";
 import Link from "next/link";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function ProductsPage() {
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -148,20 +140,18 @@ export default function ProductsPage() {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
-  const { data: products, isLoading, refetch } = useGetProductsQuery({});
+  const { data: products, isLoading } = useGetProductsQuery({});
 
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
 
   const handleDelete = async (id: string) => {
     try {
-      const result = await deleteProduct(id).unwrap();
-      if (result.id) {
-        message.success("Product deleted successfully ✅");
-        refetch();
-      }
+      await deleteProduct(id).unwrap();
+
+      toast.success("Product deleted successfully!");
     } catch (error) {
       console.log(error);
-      message.error("Failed to delete product ❌");
+      toast.error("Failed to delete product");
     }
   };
   const handleSearch = (
@@ -308,7 +298,7 @@ export default function ProductsPage() {
               }
             }}
             style={{
-              width: "50px",
+              width: "100px",
               height: "50px",
               objectFit: "cover",
               borderRadius: "5px",
@@ -329,11 +319,16 @@ export default function ProductsPage() {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      width: 250,
+      render: (text: string) => (
+        <span>{text.length > 50 ? text.slice(0, 50) + "..." : text}</span>
+      ),
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
+      width: 100,
     },
 
     {
@@ -350,18 +345,18 @@ export default function ProductsPage() {
       render: (item: Product) => {
         return (
           <Space>
-            <Link href={`/dashboard/product/edit/${item.slug}`}>Edit</Link>
-
             <Popconfirm
               title="Delete this product?"
               description="Are you sure to delete this product?"
               okText="Yes"
               cancelText="No"
-              
               onConfirm={() => handleDelete(item.id as string)}
             >
               <Button danger>Delete</Button>
             </Popconfirm>
+            <Link href={`/dashboard/product/${item.slug}`}>view</Link>
+            <Link href={`/dashboard/product/edit/${item.slug}`}>Edit</Link>
+
             {/* <Button danger onClick={() => handleDelete(item.id as string)}>
               Delete
             </Button> */}
@@ -384,7 +379,7 @@ export default function ProductsPage() {
       <div className="responsive-table-container">
         <Table
           loading={isLoading || isDeleting}
-          pagination={{ pageSize: 6 }}
+          // pagination={{ pageSize: 6 }}
           size="small"
           className="table-auto"
           // style={{ tableLayout: "auto" }}
@@ -392,8 +387,8 @@ export default function ProductsPage() {
           columns={colums}
           dataSource={products || []}
           rowKey="id"
-          // scroll={{ y: 55 * 7 }}
-          // pagination={false}
+          scroll={{ x: "max-content",y: 55 * 7 }} // horizontal scroll যোগ
+          style={{ tableLayout: "fixed" }} // fixed layout + min width
         />
       </div>
       {previewOpen && (
@@ -405,6 +400,7 @@ export default function ProductsPage() {
           <Image src={previewImage} alt="Product Photo" />
         </Modal>
       )}
+      <Toaster position="top-center" />
     </div>
   );
 }

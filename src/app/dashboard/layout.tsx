@@ -4,6 +4,7 @@ import SideBar from "@/components/dashboard/SideBar";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { Layout } from "antd";
 import React from "react";
+import { Toaster } from "react-hot-toast";
 
 const { Content } = Layout;
 
@@ -21,11 +22,12 @@ const DashboardLayout = ({
           <Content style={{ margin: "24px 16px 0" }}>
             <div
               style={{
-                padding: 24,
+                // padding: 24,
                 // overflow: "hidden",
               }}
             >
               {children}
+              <Toaster position="top-center" />
             </div>
           </Content>
         </Layout>
