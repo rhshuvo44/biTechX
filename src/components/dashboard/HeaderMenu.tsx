@@ -1,9 +1,13 @@
+import { logout } from "@/redux/features/authSlice";
+import { useAppDispatch } from "@/redux/hook";
 import { BellOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Button, Dropdown, Layout, MenuProps } from "antd";
 import Link from "next/link";
 
 const { Header } = Layout;
 const HeaderMenu = () => {
+  const dispatch = useAppDispatch();
+
   const items: MenuProps["items"] = [
     {
       label: <Link href={`/me`}>Profile</Link>,
@@ -18,18 +22,11 @@ const HeaderMenu = () => {
       type: "divider",
     },
     {
-      label: (
-        <Button
-        // onClick={() => dispatch(logout())}
-        >
-          Logout
-        </Button>
-      ),
+      label: <Button onClick={() => dispatch(logout())}>Logout</Button>,
       key: "logout",
     },
   ];
   const date = new Date();
-
   return (
     <Header
       style={{ position: "sticky", top: 0, zIndex: 1, width: "100%" }}

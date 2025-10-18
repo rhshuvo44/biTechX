@@ -13,7 +13,7 @@ export default function EditProductPage() {
   if (!product) return <p className="text-center mt-10">Product not found</p>;
 
   return (
-    <div className="max-w-lg mx-auto mt-10">
+    <div className="max-w-lg mx-auto">
       <h1 className="text-2xl font-semibold mb-4 text-center">Edit Product</h1>
       <ProductForm
         id={product?.id}

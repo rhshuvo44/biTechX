@@ -57,9 +57,8 @@ export const productApi = createApi({
         url: `/products/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, id) => [
-        { type: "Product", id },
-        { type: "Product", id: "LIST" },
+      invalidatesTags: [
+        "Product",
       ],
     }),
     getCategories: builder.query({
